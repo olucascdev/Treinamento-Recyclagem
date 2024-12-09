@@ -94,7 +94,7 @@
             {
                 "type": "UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
                 "key": "ShapeBuilder.LastSize.Door",
-                "value": "{\"m_Value\":{\"x\":2.432034969329834,\"y\":2.5181522369384767,\"z\":-0.15860939025878907}}"
+                "value": "{\"m_Value\":{\"x\":-2.423211097717285,\"y\":2.5633111000061037,\"z\":0.37366414070129397}}"
             },
             {
                 "type": "UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
