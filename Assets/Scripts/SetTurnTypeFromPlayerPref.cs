@@ -5,8 +5,8 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class SetTurnTypeFromPlayerPref : MonoBehaviour
 {
-    public SnapTurnProvider snapTurn;
-    public ContinuousTurnProvider continuousTurn;
+    public ActionBasedSnapTurnProvider snapTurn;
+    public ActionBasedContinuousTurnProvider continuousTurn;
 
     // Start is called before the first frame update
     void Start()
