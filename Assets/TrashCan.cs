@@ -1,22 +1,29 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using TMPro; // Para usar TextMeshPro
 
 public class TrashCan : MonoBehaviour
 {
-    public string correctTrashTag; // Tag que identifica o tipo correto de lixo
-    public TextMeshPro textMesh;  // Referência ao TextMeshPro no mundo
+    public string correctTrashTag; // Tag esperada para o lixo correto
+    public TMPro.TextMeshPro textMesh; // Mensagem de feedback visual
+    public UnityEngine.Events.UnityEvent OnCorrectTrash; // Evento disparado quando o lixo está correto
 
     private void Start()
     {
-        // Conecta o evento de entrada no TriggerZone ao método InsideTrash
-        GetComponent<TriggerZone>().OnEnterEvent.AddListener(InsideTrash);
+        // Conecta o evento do TriggerZone
+        var triggerZone = GetComponent<TriggerZone>();
+        if (triggerZone != null)
+        {
+            triggerZone.OnEnterEvent.AddListener(InsideTrash);
+        }
+        else
+        {
+            Debug.LogError("TriggerZone não encontrado no GameObject!");
+        }
 
-        // Certifica-se de que o texto inicial está vazio
+        // Configuração inicial do TextMeshPro
         if (textMesh != null)
         {
-            textMesh.text = "";
+            textMesh.text = ""; // Limpa qualquer texto inicial
         }
         else
         {
@@ -26,32 +33,45 @@ public class TrashCan : MonoBehaviour
 
     public void InsideTrash(GameObject go)
     {
-        Debug.Log($"Objeto detectado: {go.name}, Tag: {go.tag}"); // Para verificar o objeto e sua tag
+        if (go == null)
+        {
+            Debug.LogError("GameObject passado para InsideTrash é nulo!");
+            return;
+        }
 
-        if (go.CompareTag(correctTrashTag)) // Verifica se o lixo tem a tag correta
+        Debug.Log($"Objeto detectado: {go.name}, Tag: {go.tag}");
+
+        if (go.CompareTag(correctTrashTag))
         {
             Debug.Log("Lixo correto!");
-            textMesh.text = "Lixo correto!"; // Exibe mensagem no mundo
-            go.SetActive(false); // Desativa o lixo
-            StartCoroutine(ClearMessageAfterDelay(2f)); // Limpa o texto após 2 segundos
+            if (textMesh != null)
+            {
+                textMesh.text = "Lixo correto!";
+            }
+            go.SetActive(false); // Desativa o objeto
+
+            // Dispara o evento para próxima etapa
+            OnCorrectTrash?.Invoke();
+
+            StartCoroutine(ClearMessageAfterDelay(2f)); // Limpa mensagem de feedback
         }
         else
         {
             Debug.LogWarning("Lixo errado!");
-            textMesh.text = "Lixo errado! Reiniciando..."; // Mensagem de erro
-            StartCoroutine(RestartGameAfterDelay(2f)); // Reinicia após 2 segundos
+            if (textMesh != null)
+            {
+                textMesh.text = "Lixo errado! Tente novamente.";
+            }
+            StartCoroutine(ClearMessageAfterDelay(2f)); // Limpa mensagem após delay
         }
     }
 
     private IEnumerator ClearMessageAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        textMesh.text = ""; // Limpa o texto
-    }
-
-    private IEnumerator RestartGameAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+        if (textMesh != null)
+        {
+            textMesh.text = ""; // Limpa a mensagem de feedback
+        }
     }
 }

@@ -1,18 +1,18 @@
 using UnityEngine;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Events;
 
 public class TriggerZone : MonoBehaviour
 {
-    public string targetTag;
-    public UnityEvent<GameObject> OnEnterEvent;
-    
+    public string targetTag; // Tag do objeto que deve ser detectado
+    public UnityEvent<GameObject> OnEnterEvent; // Evento disparado ao entrar no Trigger
+
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag == targetTag)
+        Debug.Log($"Trigger detectado: {other.gameObject.name}, Tag: {other.gameObject.tag}");
+        if (other.gameObject.tag == targetTag)
         {
             OnEnterEvent.Invoke(other.gameObject);
         }
     }
+
 }
